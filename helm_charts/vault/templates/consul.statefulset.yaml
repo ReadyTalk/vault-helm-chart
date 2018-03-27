@@ -8,6 +8,9 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     component: {{.Values.Consul.ComponentName}}
     app: {{ template "name" . }}
+{{- if .Values.Affinity.Enabled }}
+    partition: {{.Values.Affinity.PartitionConsul}}
+{{- end }}
 spec:
   serviceName: {{ template "fullname" . }}-{{.Values.Consul.ComponentName}}
   replicas: {{ .Values.Consul.Replicas }}
@@ -23,6 +26,18 @@ spec:
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
+{{- if .Values.Affinity.Enabled }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "partition"
+                    operator: In
+                    values:
+                      - {{.Values.Affinity.PartitionConsul}}
+              topologyKey: "{{.Values.Affinity.TopologyKey}}"
+{{- end }}
       securityContext:
         fsGroup: 1000
       containers:

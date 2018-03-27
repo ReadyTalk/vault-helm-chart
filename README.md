@@ -142,6 +142,17 @@ It isn't hard to [get started](https://www.vaultproject.io/intro/getting-started
 | `Vault.Ui.Replicas` | Vault UI container replicas | `1` |
 | `Vault.Ui.HttpPort` | Vault UI http listening port | `8000` |
 
+Affinity
+
+If enabled then each Consul pod will be co-located with Vault pod
+
+| Parameter               | Description                           | Default                                                    |
+| ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
+| `Affinity.Enabled` | Enable affinity (preference to run on particular node) | `false` |
+| `Affinity.PartitionConsul` | Affinity label for Consul | `consul` |
+| `Affinity.PartitionVault` | Affinity label for Vault | `vault` |
+| `Affinity.TopologyKey` | Affinity topology key | `kubernetes.io/hostname` |
+
 ### Helm Install
 To install the chart with the release name `vault-prod` in namespace `vault` with the `values-prod` configuration (see [helm_charts/vault](helm_charts/vault) for values definitions):
 
