@@ -99,3 +99,9 @@ Vault:
     ImagePullPolicy: "Always"
     Replicas: 1
     HttpPort: 8000
+
+Affinity:
+  Enabled: false
+  PartitionConsul: "consul"
+  PartitionVault: "vault"
+  TopologyKey: "kubernetes.io/hostname"
