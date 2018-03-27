@@ -23,6 +23,7 @@ spec:
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}"{{ template "fullname" . }}-{{ .Values.rbac.ComponentName }}"{{ else }}"{{ .Values.rbac.ServiceAccountName }}"{{ end }}
       securityContext:
         fsGroup: 1000
       containers:

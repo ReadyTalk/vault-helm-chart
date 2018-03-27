@@ -20,6 +20,7 @@ spec:
         component: {{.Values.Consul.Ui.ComponentName}}
         app: {{ template "name" . }}
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}"{{ template "fullname" . }}-{{ .Values.rbac.ComponentName }}"{{ else }}"{{ .Values.rbac.ServiceAccountName }}"{{ end }}
       containers:
       - name: {{ template "fullname" . }}-{{.Values.Consul.Ui.ComponentName}}
         image: "{{.Values.Consul.Image}}:{{.Values.Consul.ImageTag}}"

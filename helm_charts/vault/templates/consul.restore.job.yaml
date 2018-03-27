@@ -22,6 +22,7 @@ spec:
         component: {{.Values.Consul.Restore.ComponentName}}
         app: {{ template "name" . }}
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}"{{ template "fullname" . }}-{{ .Values.rbac.ComponentName }}"{{ else }}"{{ .Values.rbac.ServiceAccountName }}"{{ end }}
       restartPolicy: Never
       containers:
       - name: {{ template "fullname" . }}-{{.Values.Consul.Restore.ComponentName}}

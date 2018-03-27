@@ -19,6 +19,7 @@ spec:
         component: {{.Values.Vault.ComponentName}}
         app: {{ template "name" . }}
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}"{{ template "fullname" . }}-{{ .Values.rbac.ComponentName }}"{{ else }}"{{ .Values.rbac.ServiceAccountName }}"{{ end }}
       {{- if .Values.Vault.HostAliases }}
       hostAliases:
       {{- range .Values.Vault.HostAliases }}

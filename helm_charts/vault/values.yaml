@@ -99,3 +99,6 @@ Vault:
     ImagePullPolicy: "Always"
     Replicas: 1
     HttpPort: 8000
+rbac:
+  ComponentName: "rbac"
+  ServiceAccountName: "vault-consul-sa" # Unused if RBAC is set to true

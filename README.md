@@ -142,11 +142,23 @@ It isn't hard to [get started](https://www.vaultproject.io/intro/getting-started
 | `Vault.Ui.Replicas` | Vault UI container replicas | `1` |
 | `Vault.Ui.HttpPort` | Vault UI http listening port | `8000` |
 
+Misc. parameters
+| Parameter               | Description                           | Default                                                    |
+| ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
+| `rbac.create` | Enable RBAC support | `false` |
+| `rbac.ComponentName` | Used for resource names and labeling | `rbac` |
+| `rbac.ServiceAccountName` | Service-account name to use with helm | `vault-consul-sa` |
+
 ### Helm Install
 To install the chart with the release name `vault-prod` in namespace `vault` with the `values-prod` configuration (see [helm_charts/vault](helm_charts/vault) for values definitions):
 
 ```bash
 helm install --values helm_charts/vault/values-prod.yaml --name vault-prod --namespace vault helm_charts/vault
+```
+
+With `RBAC` authentication support:
+```bash
+helm install --set rbac.create=true --values helm_charts/vault/values-prod.yaml --name vault-prod --namespace vault helm_charts/vault
 ```
 
 It will take a minute or two for the pre-installation steps to run. Then Helm will finish installing all the necessary resources.
