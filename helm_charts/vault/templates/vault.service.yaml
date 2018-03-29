@@ -8,6 +8,8 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     component: {{.Values.Vault.ComponentName}}
     app: {{ template "name" . }}
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
   {{- if not .Values.Vault.Ingress.Enabled }}
   type: NodePort
