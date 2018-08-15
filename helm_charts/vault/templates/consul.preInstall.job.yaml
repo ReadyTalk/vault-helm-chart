@@ -26,6 +26,15 @@ spec:
         app: {{ template "name" . }}
     spec:
       restartPolicy: Never
+      initContainers:
+        - name: copy-ro-scripts
+          image: busybox
+          command: ['sh', '-c', 'cp /scripts/* /etc/pre-install/']
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+            - name: pre-install
+              mountPath: /etc/pre-install
       containers:
       - name: {{ template "fullname" . }}-{{.Values.Consul.PreInstall.ComponentName}}
         image: "{{.Values.Misc.kubectl.Image}}:{{.Values.Misc.kubectl.ImageTag}}"
@@ -64,6 +73,8 @@ spec:
           readOnly: true
       volumes:
         - name: pre-install
+          emptyDir: {}
+        - name: scripts
           configMap:
             name: {{ template "fullname" . }}-{{.Values.Consul.PreInstall.ComponentName}}
         - name: podinfo
