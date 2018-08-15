@@ -2,13 +2,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}-{{.Values.Vault.ConsulClient.ComponentName}}
+  name: "{{ template "vault.fullname" . }}-{{.Values.Vault.ConsulClient.ComponentName}}"
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: {{.Values.Vault.ConsulClient.ComponentName}}
-    app: {{ template "name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "vault.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
 data:
   config.json : |
     {
@@ -33,5 +32,3 @@ data:
       "verify_outgoing": true,
       "verify_server_hostname": true
     }
-
-# Disabling verify_incoming which will disable client TLS auth

@@ -4,7 +4,6 @@ HERITAGE=$(grep "heritage=" /etc/podinfo/labels | sed 's/^.*="\(.*\)"$/\1/')
 RELEASE=$(grep "release=" /etc/podinfo/labels | sed 's/^.*="\(.*\)"$/\1/')
 CHART=$(grep "chart=" /etc/podinfo/labels | sed 's/^.*="\(.*\)"$/\1/')
 COMPONENT=$(grep "component=" /etc/podinfo/labels | sed 's/^.*="\(.*\)"$/\1/')
-APP=$(grep "app=" /etc/podinfo/labels | sed 's/^.*="\(.*\)"$/\1/')
 
 kubectl delete secrets -l release=$RELEASE,component=$COMPONENT
 
@@ -19,5 +18,4 @@ kubectl label secret \
   heritage=$HERITAGE \
   release=$RELEASE \
   chart=$CHART \
-  component=$COMPONENT \
-  app=$APP
+  component=$COMPONENT

@@ -1,13 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-{{.Values.Vault.ComponentName}}
+  name: {{ template "vault.fullname" . }}
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: {{.Values.Vault.ComponentName}}
-    app: {{ template "name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "vault.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
 spec:
   {{- if not .Values.Vault.Ingress.Enabled }}
   type: NodePort
@@ -19,5 +18,4 @@ spec:
     nodePort: {{.Values.Vault.NodePort}}
     {{- end }}
   selector:
-    release: {{ .Release.Name }}
-    component: {{.Values.Vault.ComponentName}}
+    component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"

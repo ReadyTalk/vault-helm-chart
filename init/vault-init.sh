@@ -10,16 +10,17 @@ fi
 RELEASE=$1
 NAMESPACE=$2
 CHART_NAME="vault"
-COMPONENT="vault"
+COMPONENT="${RELEASE}-vault"
+ADD_SECRET=${3-"false"}
 
 SECRET_NAME="$RELEASE-vault-keys"
 
 LABELS=$(kubectl get secret -l release=$RELEASE -n $NAMESPACE --show-labels | sed -n 2p | awk '{print $5}' | sed 's/\,/ /g')
 FIRST_VAULT_POD=$(kubectl get po -l component=$COMPONENT,release=$RELEASE -n $NAMESPACE | awk '{if(NR==2)print $1}')
-INIT_MESSAGE=$(kubectl exec -n $NAMESPACE -c $RELEASE-$CHART_NAME-$COMPONENT $FIRST_VAULT_POD -- sh -c "vault init --tls-skip-verify" 2>&1)
+INIT_MESSAGE=$(kubectl exec -n $NAMESPACE -c $RELEASE $FIRST_VAULT_POD -- sh -c "vault operator init --tls-skip-verify" 2>&1)
 
 echo "$INIT_MESSAGE"
-if [[ ${INIT_MESSAGE} != *"Error initializing Vault"*  ]]; then
+if [[ ${INIT_MESSAGE} != *"Error initializing Vault"* && "${ADD_SECRET}" == "true"  ]]; then
   echo
   echo
   echo "Deleting existing Vault key secret"
@@ -40,5 +41,5 @@ if [[ ${INIT_MESSAGE} != *"Error initializing Vault"*  ]]; then
   kubectl label secret -n $NAMESPACE \
     --overwrite \
     $SECRET_NAME \
-    component="vault-init"
+    component="${RELEASE}-vault-init"
 fi

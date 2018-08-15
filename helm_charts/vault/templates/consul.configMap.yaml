@@ -1,14 +1,12 @@
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}-{{.Values.Consul.ComponentName}}
+  name: "{{ template "vault.fullname" . }}-{{.Values.Consul.ComponentName}}"
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: {{.Values.Consul.ComponentName}}
-    app: {{ template "name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "vault.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Consul.ComponentName }}"
 data:
   config.json : |
     {

@@ -3,19 +3,18 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}-{{.Values.Consul.Restore.ComponentName}}
+  name: {{ template "vault.fullname" . }}-{{.Values.Consul.Restore.ComponentName}}
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: {{.Values.Consul.Restore.ComponentName}}
-    app: {{ template "name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "vault.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Consul.Restore.ComponentName }}"
 data:
   config.json : |
     {
       "server": false,
       "datacenter": "{{.Values.Consul.Datacenter}}",
-      "retry_join": ["{{ template "fullname" . }}-{{.Values.Consul.ComponentName}}"],
+      "retry_join": ["{{ template "vault.fullname" . }}-{{.Values.Consul.ComponentName}}"],
       "bind_addr": "0.0.0.0",
       "ca_file": "/consul/ca/ca.crt.pem",
       "cert_file": "/consul/tls/tls.crt",

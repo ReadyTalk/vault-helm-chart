@@ -1,4 +1,6 @@
-# Vault
+  # Vault
+
+> **UPGRADE WARNING**: There is a breaking change currently in master that will result in loss of data if used as an upgrade from a previous version. See [changelog](CHANGELOG.md) for more details.  The tag v1.1 can safely be used if you're not ready to deal with this change.
 
 This project sets up [Vault by Hashicorp](https://www.vaultproject.io/) on Kubernetes using Helm in a HA configuration.  It create its own private Consul backend and secures the Consul and Vault traffic. Also, optionally, a Consul UI and Vault UI can be enabled.
 
@@ -131,7 +133,7 @@ It will take a minute or two for the pre-installation steps to run. Then Helm wi
 
 To check the status run `kubectl get po -l release=vault-prod,component=vault -n vault` and all pods should have a `Running` status.
 
-> **Notes on pre-install steps**: This Helm chart has pre-install jobs that create certain Kubernetes secrets before the rest of the application get set up.  See the READMEs in [helm_charts/vault/init/preInstallConsul](helm_charts/vault/init/preInstallConsul) and [helm_charts/vault/init/preInstallVault](helm_charts/vault/init/preInstallVault) for more information on what is going on here.  If there is a failure while running the install, it could be due to the pre-install scripts failing. To look at the pre-install resources:
+> **Notes on pre-install steps**: This Helm chart has pre-install jobs that create certain Kubernetes secrets before the rest of the application get set up.  See the READMEs in [helm_charts/vault/init/preInstallConsul](helm_charts/vault/preInstallConsul) and [helm_charts/vault/init/preInstallVault](helm_charts/vault/preInstallVault) for more information on what is going on here.  If there is a failure while running the install, it could be due to the pre-install scripts failing. To look at the pre-install resources:
 ```
 kubectl get po,jobs,cm,secrets -l 'component in (consul-preinstall,vault-preinstall),release=vault-prod' -n vault --show-all
 ```

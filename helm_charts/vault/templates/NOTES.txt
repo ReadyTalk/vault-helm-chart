@@ -1,8 +1,10 @@
-Vault has been installed.
+Vault has been installed/upgraded.
 
-It will take several minutes for all of the components to become available.
+It may take several minutes for all of the components to become available.
 
-Initialize and Unseal Vault by running the following:
-  export POD_NAME=$(kubectl --namespace {{ .Release.Namespace }} get pods -o jsonpath="{.items[0].metadata.name}" -l "app={{ template "name" . }},component={{ .Values.Vault.ComponentName }},release={{ .Release.Name }}")
-  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME {{ .Values.Vault.HttpPort }}:{{ .Values.Vault.HttpPort }}
-  echo "Visit https://127.0.0.1:{{ .Values.Vault.HttpPort }} to access your application."
+If this is a new install, initialize Vault by running the following:
+  kubectl exec -it $(kubectl --namespace {{ .Release.Namespace }} get pods -o jsonpath="{.items[0].metadata.name}" -l "component={{ .Release.Name }}-{{ .Values.Vault.ComponentName }}") -c {{ template "vault.fullname" . }} sh
+  vault init {{ template "tls_skip_verify" . }}
+
+To unseal Vault, execute into each running pod and execute:
+  vault unseal {{ template "tls_skip_verify" . }}

@@ -1,13 +1,12 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "fullname" . }}-{{.Values.Consul.PreInstall.ComponentName}}
+  name: "{{ template "vault.fullname" . }}-{{.Values.Consul.PreInstall.ComponentName}}"
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: {{.Values.Consul.PreInstall.ComponentName}}
-    app: {{ template "name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "vault.chart" . }}
+    component: "{{ .Release.Name }}-{{.Values.Consul.PreInstall.ComponentName}}"
   annotations:
     # This is what defines this resource as a hook. Without this line, the
     # job is considered part of the release.
@@ -17,13 +16,12 @@ spec:
   activeDeadlineSeconds: {{.Values.Consul.PreInstall.JobDeadline}}
   template:
     metadata:
-      name: {{ template "fullname" . }}-{{.Values.Consul.PreInstall.ComponentName}}
+      name: "{{ template "vault.fullname" . }}-{{.Values.Consul.PreInstall.ComponentName}}"
       labels:
-        heritage: {{ .Release.Service }}
-        release: {{ .Release.Name }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-        component: {{.Values.Consul.PreInstall.ComponentName}}
-        app: {{ template "name" . }}
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: {{ template "vault.chart" . }}
+        component: "{{ .Release.Name }}-{{.Values.Consul.PreInstall.ComponentName}}"
     spec:
       restartPolicy: Never
       initContainers:
@@ -36,12 +34,12 @@ spec:
             - name: pre-install
               mountPath: /etc/pre-install
       containers:
-      - name: {{ template "fullname" . }}-{{.Values.Consul.PreInstall.ComponentName}}
+      - name: "{{ template "vault.fullname" . }}-{{.Values.Consul.PreInstall.ComponentName}}"
         image: "{{.Values.Misc.kubectl.Image}}:{{.Values.Misc.kubectl.ImageTag}}"
         imagePullPolicy: "Always"
         env:
           - name: FULL_NAME
-            value: {{ template "fullname" . }}
+            value: {{ template "vault.fullname" . }}
           - name: DATACENTER
             value: {{.Values.Consul.Datacenter}}
           - name: TLS_COUNTRY_NAME
@@ -64,7 +62,6 @@ spec:
           cd /pre-install
           ./generate-consul-tls-certs.sh
           ./create-consul-secrets.sh
-          # /bin/sleep 1000
         volumeMounts:
         - name: pre-install
           mountPath: /pre-install
@@ -76,7 +73,7 @@ spec:
           emptyDir: {}
         - name: scripts
           configMap:
-            name: {{ template "fullname" . }}-{{.Values.Consul.PreInstall.ComponentName}}
+            name: "{{ template "vault.fullname" . }}-{{.Values.Consul.PreInstall.ComponentName}}"
         - name: podinfo
           downwardAPI:
             items:

@@ -1,30 +1,25 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-{{.Values.Vault.ComponentName}}
+  name: {{ template "vault.fullname" . }}
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: {{.Values.Vault.ComponentName}}
-    app: {{ template "name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "vault.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
 spec:
   replicas: {{ .Values.Vault.Replicas }}
   selector:
     matchLabels:
-      heritage: {{ .Release.Service }}
-      release: {{ .Release.Name }}
-      chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-      component: {{.Values.Vault.ComponentName}}
-      app: {{ template "name" . }}
+      release: {{ .Release.Name | quote }}
+      component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
   template:
     metadata:
       labels:
-        heritage: {{ .Release.Service }}
-        release: {{ .Release.Name }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-        component: {{.Values.Vault.ComponentName}}
-        app: {{ template "name" . }}
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: {{ template "vault.chart" . }}
+        component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
     spec:
       {{- if .Values.Vault.HostAliases }}
       hostAliases:
@@ -37,7 +32,7 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-      - name: {{ template "fullname" . }}-{{.Values.Vault.ComponentName}}
+      - name: {{ template "vault.fullname" . }}
         image: "{{.Values.Vault.Image}}:{{.Values.Vault.ImageTag}}"
         imagePullPolicy: {{.Values.Vault.ImagePullPolicy}}
         command:
@@ -106,7 +101,7 @@ spec:
           capabilities:
             add:
               - IPC_LOCK
-      - name: {{ template "fullname" . }}-{{.Values.Vault.ConsulClient.ComponentName}}
+      - name: "{{ template "vault.fullname" . }}-{{.Values.Vault.ConsulClient.ComponentName}}"
         image: "{{.Values.Consul.Image}}:{{.Values.Consul.ImageTag}}"
         imagePullPolicy: "{{.Values.Consul.ImagePullPolicy}}"
         ports:
@@ -132,7 +127,7 @@ spec:
         - name: INITIAL_CLUSTER_SIZE
           value: {{ .Values.Consul.Replicas | quote }}
         - name: STATEFULSET_NAME
-          value: "{{ template "fullname" . }}-{{.Values.Consul.ComponentName}}"
+          value: "{{ template "vault.fullname" . }}-{{.Values.Consul.ComponentName}}"
         - name: STATEFULSET_NAMESPACE
           valueFrom:
             fieldRef:
@@ -161,43 +156,43 @@ spec:
               agent \
               -config-dir=/consul/config \
               -config-dir=/consul/secrets \
-              -retry-join={{ template "fullname" . }}-{{.Values.Consul.ComponentName}}
+              -retry-join={{ template "vault.fullname" . }}-{{.Values.Consul.ComponentName}}
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}-{{.Values.Vault.ComponentName}}
+          name: {{ template "vault.fullname" . }}
           items:
           - key: config.json
             path: config.json
       - name: tls
         secret:
-          secretName: {{ template "fullname" . }}.tls
+          secretName: {{ template "vault.fullname" . }}.tls
       - name: ca-consul
         secret:
-          secretName: {{ template "fullname" . }}-consul.ca
+          secretName: {{ template "vault.fullname" . }}-consul.ca
       - name: tls-consul
         secret:
-          secretName: {{ template "fullname" . }}-consul.tls
+          secretName: {{ template "vault.fullname" . }}-consul.tls
       {{- if .Values.Vault.AutoUnseal }}
       - name: vault-keys
         secret:
-          secretName: {{ template "fullname" . }}-keys
+          secretName: {{ template "vault.fullname" . }}-vault-keys
       - name: post-start
         configMap:
-          name: {{ template "fullname" . }}-post-start
+          name: {{ template "vault.fullname" . }}-post-start
       {{- end }}
       - name: consul-config
         configMap:
-          name: {{ template "fullname" . }}-{{.Values.Vault.ConsulClient.ComponentName}}
+          name: "{{ template "vault.fullname" . }}-{{.Values.Vault.ConsulClient.ComponentName}}"
       - name: gossip-json
         secret:
-          secretName: {{ template "fullname" . }}-consul-gossip-json
+          secretName: {{ template "vault.fullname" . }}-consul-gossip-json
       - name: consul-unix-socket
         emptyDir: {}
       {{- if .Values.Vault.HostAliases }}
       - name: nsswitch
         configMap:
-          name: {{ template "fullname" . }}-{{.Values.Vault.ComponentName}}
+          name: "{{ template "vault.fullname" . }}"
           items:
           - key: nsswitch.conf
             path: nsswitch.conf

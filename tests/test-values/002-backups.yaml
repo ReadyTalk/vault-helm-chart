@@ -1,0 +1,3 @@
+Consul:
+  Backup:
+    Enabled: true

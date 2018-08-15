@@ -2,33 +2,28 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-{{.Values.Consul.Backup.ComponentName}}
+  name: "{{ template "vault.fullname" . }}-{{.Values.Consul.Backup.ComponentName}}"
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: {{.Values.Consul.Backup.ComponentName}}
-    app: {{ template "name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "vault.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Consul.Backup.ComponentName }}"
 spec:
   replicas: {{ .Values.Consul.Backup.Replicas }}
   selector:
     matchLabels:
-      heritage: {{ .Release.Service }}
-      release: {{ .Release.Name }}
-      chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-      component: {{.Values.Consul.Backup.ComponentName}}
-      app: {{ template "name" . }}
+      release: {{ .Release.Name | quote }}
+      component: "{{ .Release.Name }}-{{ .Values.Consul.Backup.ComponentName }}"
   template:
     metadata:
       labels:
-        heritage: {{ .Release.Service }}
-        release: {{ .Release.Name }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-        component: {{.Values.Consul.Backup.ComponentName}}
-        app: {{ template "name" . }}
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: {{ template "vault.chart" . }}
+        component: "{{ .Release.Name }}-{{ .Values.Consul.Backup.ComponentName }}"
     spec:
       containers:
-      - name: {{ template "fullname" . }}-{{.Values.Consul.Backup.ComponentName}}
+      - name: "{{ template "vault.fullname" . }}-{{.Values.Consul.Backup.ComponentName}}"
         image: "{{.Values.Consul.Backup.Image}}:{{.Values.Consul.Backup.ImageTag}}"
         imagePullPolicy: {{.Values.Consul.Backup.ImagePullPolicy}}
         env:
@@ -61,17 +56,17 @@ spec:
       volumes:
       - name: consul-config
         configMap:
-          name: {{ template "fullname" . }}-{{.Values.Consul.Backup.ComponentName}}
+          name: "{{ template "vault.fullname" . }}-{{.Values.Consul.Backup.ComponentName}}"
           items:
           - key: config.json
             path: config.json
       - name: ca-consul
         secret:
-          secretName: {{ template "fullname" . }}-consul.ca
+          secretName: {{ template "vault.fullname" . }}-consul.ca
       - name: tls-consul
         secret:
-          secretName: {{ template "fullname" . }}-consul.tls
+          secretName: {{ template "vault.fullname" . }}-consul.tls
       - name: gossip-key
         secret:
-          secretName: {{ template "fullname" . }}-consul-gossip-json
+          secretName: {{ template "vault.fullname" . }}-consul-gossip-json
 {{- end }}

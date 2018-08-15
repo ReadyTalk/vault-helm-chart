@@ -2,13 +2,12 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "fullname" . }}-{{.Values.Vault.ComponentName}}
+  name: {{ template "vault.fullname" . }}
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: {{.Values.Vault.ComponentName}}
-    app: {{ template "name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "vault.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
   annotations:
     kubernetes.io/ingress.class: "nginx"
 spec:
@@ -18,7 +17,7 @@ spec:
         paths:
         - path: /
           backend:
-            serviceName: {{ template "fullname" . }}-{{.Values.Vault.ComponentName}}
+            serviceName: {{ template "vault.fullname" . }}
             servicePort: {{.Values.Vault.HttpPort}}
     {{- $root := . -}}
     {{- range .Values.Vault.Tls.AlternateServerNames | split "," }}
@@ -27,7 +26,7 @@ spec:
         paths:
         - path: /
           backend:
-            serviceName: {{ template "fullname" $root }}-{{$root.Values.Vault.ComponentName}}
+            serviceName: "{{ template "vault.fullname" $root }}"
             servicePort: {{$root.Values.Vault.HttpPort}}
     {{- end }}
 {{- end }}

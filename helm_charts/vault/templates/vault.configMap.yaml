@@ -2,13 +2,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}-{{.Values.Vault.ComponentName}}
+  name: {{ template "vault.fullname" . }}
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: {{.Values.Vault.ComponentName}}
-    app: {{ template "name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "vault.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
 data:
   config.json : |
     storage "consul" {
@@ -29,5 +28,3 @@ data:
   nsswitch.conf: |
     hosts:          files mdns4_minimal [NOTFOUND=return] dns
   {{- end }}
-
-# disable_mlock - set to false to disable memory from being swapped to disk

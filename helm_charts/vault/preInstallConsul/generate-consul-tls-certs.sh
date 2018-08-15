@@ -33,12 +33,11 @@ mkdir -p /certs/csr
 # CA certs
 echo "Creating CA..."
 commonName='vault-ca'
-cmd="openssl req -config /pre-install/openssl.cnf \
+cmd="openssl req -config ./openssl.cnf \
       -newkey rsa -days 3650 -x509 -nodes -extensions v3_ca \
       -subj /C=${countryName}/ST=${stateOrProvinceName}/L=${localityName}/O=${organizationName}/OU=${organizationalUnitName}/CN=${commonName} \
       -out /certs/cert/ca.crt.pem \
       -keyout /certs/private/ca.key.pem"
-#$cmd &>/dev/null
 $cmd
 if [[ $? -ne 0 ]] ; then
   echo -e "\n\nERROR: CA certificate request not valid"; exit 1
@@ -47,7 +46,7 @@ fi
 # Consul certs (client/server)
 echo "Creating Consul cert..."
 commonName='consul'
-cmd="openssl req -config /pre-install/openssl.cnf \
+cmd="openssl req -config ./openssl.cnf \
       -newkey rsa -nodes \
       -subj /C=${countryName}/ST=${stateOrProvinceName}/L=${localityName}/O=${organizationName}/OU=${organizationalUnitName}/CN=${commonName} \
       -out /certs/csr/${commonName}.csr.pem \
@@ -57,7 +56,7 @@ if [[ $? -ne 0 ]] ; then
   echo -e "\n\nERROR: Consul certificate request not valid"; exit 1
 fi
 
-cmd="openssl ca -batch -config /pre-install/openssl.cnf \
+cmd="openssl ca -batch -config ./openssl.cnf \
       -notext -extensions server_cert -notext \
       -in /certs/csr/${commonName}.csr.pem \
       -subj /C=${countryName}/ST=${stateOrProvinceName}/L=${localityName}/O=${organizationName}/OU=${organizationalUnitName}/CN=${commonName} \
@@ -66,4 +65,3 @@ $cmd &>/dev/null
 if [[ $? -ne 0 ]] ; then
   echo -e "\n\nERROR: Consul certificate request not valid"; exit 1
 fi
-

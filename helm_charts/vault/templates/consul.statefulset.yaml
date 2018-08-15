@@ -1,39 +1,34 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}-{{.Values.Consul.ComponentName}}
+  name: "{{ template "vault.fullname" . }}-{{.Values.Consul.ComponentName}}"
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: {{.Values.Consul.ComponentName}}
-    app: {{ template "name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "vault.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Consul.ComponentName }}"
 spec:
-  serviceName: {{ template "fullname" . }}-{{.Values.Consul.ComponentName}}
+  serviceName: "{{ template "vault.fullname" . }}-{{.Values.Consul.ComponentName}}"
+  updateStrategy:
+    type: "OnDelete"
   replicas: {{ .Values.Consul.Replicas }}
   selector:
     matchLabels:
-      heritage: {{ .Release.Service }}
-      release: {{ .Release.Name }}
-      chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-      component: {{.Values.Consul.ComponentName}}
-      app: {{ template "name" . }}
+      release: {{ .Release.Name | quote }}
+      component: "{{ .Release.Name }}-{{ .Values.Consul.ComponentName }}"
   template:
     metadata:
-      name: {{ template "fullname" . }}-{{.Values.Consul.ComponentName}}
+      name: "{{ template "vault.fullname" . }}-{{.Values.Consul.ComponentName}}"
       labels:
-        heritage: {{ .Release.Service }}
-        release: {{ .Release.Name }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-        component: {{.Values.Consul.ComponentName}}
-        app: {{ template "name" . }}
-      annotations:
-        pod.alpha.kubernetes.io/initialized: "true"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: {{ template "vault.chart" . }}
+        component: "{{ .Release.Name }}-{{ .Values.Consul.ComponentName }}"
     spec:
       securityContext:
         fsGroup: 1000
       containers:
-      - name: {{ template "fullname" . }}-{{.Values.Consul.ComponentName}}
+      - name: "{{ template "vault.fullname" . }}-{{.Values.Consul.ComponentName}}"
         image: "{{.Values.Consul.Image}}:{{.Values.Consul.ImageTag}}"
         imagePullPolicy: "{{.Values.Consul.ImagePullPolicy}}"
         ports:
@@ -63,7 +58,7 @@ spec:
         - name: INITIAL_CLUSTER_SIZE
           value: {{ .Values.Consul.Replicas | quote }}
         - name: STATEFULSET_NAME
-          value: "{{ template "fullname" . }}-{{.Values.Consul.ComponentName}}"
+          value: "{{ template "vault.fullname" . }}-{{.Values.Consul.ComponentName}}"
         - name: POD_IP
           valueFrom:
             fieldRef:
@@ -93,7 +88,7 @@ spec:
             - "-client-cert=/consul/tls/tls.crt"
             - "-client-key=/consul/tls/tls.key"
             - "-http-addr=https://127.0.0.1:{{.Values.Consul.HttpPort}}"
-            - "-tls-server-name={{ template "fullname" . }}-{{.Values.Consul.ComponentName}}"
+            - "-tls-server-name={{ template "vault.fullname" . }}-{{.Values.Consul.ComponentName}}"
           initialDelaySeconds: 300
           timeoutSeconds: 5
         command:
@@ -127,16 +122,16 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}-{{.Values.Consul.ComponentName}}
+          name: "{{ template "vault.fullname" . }}-{{.Values.Consul.ComponentName}}"
           items:
           - key: config.json
             path: config.json
       - name: gossip-json
         secret:
-          secretName: {{ template "fullname" . }}-consul-gossip-json
+          secretName: {{ template "vault.fullname" . }}-consul-gossip-json
       - name: tls
         secret:
-          secretName: {{ template "fullname" . }}-consul.tls
+          secretName: {{ template "vault.fullname" . }}-consul.tls
       - name: ca
         secret:
-          secretName: {{ template "fullname" . }}-consul.ca
+          secretName: {{ template "vault.fullname" . }}-consul.ca

@@ -1,0 +1,3 @@
+TODO:
+* Auto-unseal
+* Backups

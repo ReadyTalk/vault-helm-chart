@@ -2,13 +2,12 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "fullname" . }}-{{.Values.Vault.PreInstall.ComponentName}}
+  name: {{ template "vault.fullname" . }}-{{.Values.Vault.PreInstall.ComponentName}}
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: {{.Values.Vault.PreInstall.ComponentName}}
-    app: {{ template "name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "vault.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Vault.PreInstall.ComponentName }}"
   annotations:
     "helm.sh/hook": pre-install
     "helm.sh/hook-weight": "100"
@@ -16,17 +15,16 @@ spec:
   activeDeadlineSeconds: {{.Values.Vault.PreInstall.JobDeadline}}
   template:
     metadata:
-      name: {{ template "fullname" . }}-{{.Values.Vault.PreInstall.ComponentName}}
+      name: {{ template "vault.fullname" . }}-{{.Values.Vault.PreInstall.ComponentName}}
       labels:
-        heritage: {{ .Release.Service }}
-        release: {{ .Release.Name }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-        component: {{.Values.Vault.PreInstall.ComponentName}}
-        app: {{ template "name" . }}
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: {{ template "vault.chart" . }}
+        component: "{{ .Release.Name }}-{{.Values.Vault.PreInstall.ComponentName}}"
     spec:
       restartPolicy: Never
       containers:
-      - name: {{ template "fullname" . }}-{{.Values.Vault.PreInstall.ComponentName}}
+      - name: {{ template "vault.fullname" . }}-{{.Values.Vault.PreInstall.ComponentName}}
         image: "{{.Values.Misc.omgwtfssl.Image}}:{{.Values.Misc.omgwtfssl.ImageTag}}"
         imagePullPolicy: "Always"
         env:
@@ -43,9 +41,9 @@ spec:
           - name: SILENT
             value: "true"
           - name: K8S_SECRET_NAME
-            value: "{{ template "fullname" . }}.tls"
+            value: "{{ template "vault.fullname" . }}.tls"
           - name: K8S_SECRET_COMBINE_CA
             value: "true"
           - name: K8S_SECRET_LABELS
-            value: "heritage={{ .Release.Service }} release={{ .Release.Name }} chart={{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }} component={{.Values.Vault.PreInstall.ComponentName }} app={{ template "name" . }}"
+            value: "heritage={{ .Release.Service }} release={{ .Release.Name }} chart={{ template "vault.chart" . }} component={{ .Release.Name }}-{{.Values.Vault.PreInstall.ComponentName}}"
 {{- end }}

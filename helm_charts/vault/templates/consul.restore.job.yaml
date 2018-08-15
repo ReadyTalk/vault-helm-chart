@@ -3,28 +3,26 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "fullname" . }}-{{.Values.Consul.Restore.ComponentName}}
+  name: {{ template "vault.fullname" . }}-{{.Values.Consul.Restore.ComponentName}}
   labels:
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: {{.Values.Consul.Restore.ComponentName}}
-    app: {{ template "name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "vault.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Consul.Restore.ComponentName }}"
 spec:
   activeDeadlineSeconds: 100
   template:
     metadata:
-      name: {{ template "fullname" . }}-{{.Values.Consul.Restore.ComponentName}}
+      name: {{ template "vault.fullname" . }}-{{.Values.Consul.Restore.ComponentName}}
       labels:
-        heritage: {{ .Release.Service }}
-        release: {{ .Release.Name }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-        component: {{.Values.Consul.Restore.ComponentName}}
-        app: {{ template "name" . }}
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: {{ template "vault.chart" . }}
+        component: "{{ .Release.Name }}-{{ .Values.Consul.Restore.ComponentName }}"
     spec:
       restartPolicy: Never
       containers:
-      - name: {{ template "fullname" . }}-{{.Values.Consul.Restore.ComponentName}}
+      - name: {{ template "vault.fullname" . }}-{{.Values.Consul.Restore.ComponentName}}
         image: "{{.Values.Consul.Backup.Image}}:{{.Values.Consul.Backup.ImageTag}}"
         imagePullPolicy: {{.Values.Consul.Backup.ImagePullPolicy}}
         env:
@@ -57,21 +55,21 @@ spec:
       volumes:
       - name: consul-config
         configMap:
-          name: {{ template "fullname" . }}-{{.Values.Consul.Restore.ComponentName}}
+          name: {{ template "vault.fullname" . }}-{{.Values.Consul.Restore.ComponentName}}
           items:
           - key: config.json
             path: config.json
       - name: tls
         secret:
-          secretName: {{ template "fullname" . }}.tls
+          secretName: {{ template "vault.fullname" . }}.tls
       - name: ca-consul
         secret:
-          secretName: {{ template "fullname" . }}-consul.ca
+          secretName: {{ template "vault.fullname" . }}-consul.ca
       - name: tls-consul
         secret:
-          secretName: {{ template "fullname" . }}-consul.tls
+          secretName: {{ template "vault.fullname" . }}-consul.tls
       - name: gossip-key
         secret:
-          secretName: {{ template "fullname" . }}-consul-gossip-json
+          secretName: {{ template "vault.fullname" . }}-consul-gossip-json
 {{- end }}
 {{- end }}
