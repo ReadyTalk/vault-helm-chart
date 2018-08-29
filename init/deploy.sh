@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #set -x
-REL=${1-"secret"}
-NAMESPACE=${2-"vault"}
+REL=${1-"dev"}
+NAMESPACE=${2-"default"}
 DEPLOY_DIR=$(pwd)
 
 echo "----------------------------- Purging ----------------------------"
@@ -11,25 +11,30 @@ kubectl delete configmap,job ${REL}-vault-consul-preinstall ${REL}-vault-vault-p
 
 echo "----------------------------- Installing -------------------------"
 helm install --name ${REL} --namespace ${NAMESPACE} ../helm_charts/vault
+RC=$?
 helm list | grep ${REL}
 
-echo -n "Loading vault -> "
-i=1
-sp="/-\|"
-echo -n ' '
-RUNNING=0
-while [ ${RUNNING} -lt 3 ];
-do
-    sleep 1
-    echo -n "RUNNING: ${RUNNING}  "
-    RUNNING=$(kubectl -n vault get pods -l=component=${REL}-vault | grep Running | wc -l)
-    printf "\b${sp:i++%${#sp}:1}"
-done
+if [ $RC -eq 0 ]
+then
+  echo -n " "
+  i=1
+  sp="/-\|"
+  echo -n ' '
+  RUNNING=0
+  while [ ${RUNNING} -lt 3 ];
+  do
+      sleep 1
+      printf "\b${sp:i++%${#sp}:1}"
+  done
+else
+    exit
+fi
 
 # TODO FIXME smarter way to wait_for vault
-#echo "----------------------------- Initializing -----------------------"
-#sleep 10
-#${DEPLOY_DIR}/vault-init.sh ${REL} ${NAMESPACE}
+echo "----------------------------- Initializing -----------------------"
+sleep 10
+exec ${DEPLOY_DIR}/vault-init.sh ${REL} ${NAMESPACE}
 
 #echo "----------------------------- Unsealing --------------------------"
-#${DEPLOY_DIR}/vault-init.sh ${REL} ${NAMESPACE}
+sleep 5
+exec ${DEPLOY_DIR}/vault-unseal.sh ${REL} ${NAMESPACE}
