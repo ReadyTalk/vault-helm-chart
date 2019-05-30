@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: demo
+spec:
+  template:
+    metadata:
+      labels:
+        app: demo-app
+    spec:
+        #serviceAccountName: default
+      initContainers:
+      - name: vault-init
+        image: chrislevi/kube-vault-auth-init
+        imagePullPolicy: Always
+        #image: wealthwizardsengineering/kube-vault-auth-init
+        env:
+        - name: KUBERNETES_AUTH_PATH
+          value: "kubernetes"
+        - name: VAULT_ADDR
+          value: "https://dev-vault:8200"
+        - name: VAULT_SKIP_VERIFY
+          value: "true"
+        - name: VAULT_LOGIN_ROLE
+          value: "demo-role"
+        - name: SECRET_FOO
+          value: "secret/demo?foo"
+        - name: SECRET_REDIS_SERVICE_PASSWORD
+          value: "secret/demo?REDIS_SERVICE_PASSWORD"
+        volumeMounts:
+        - name: shared-data
+          mountPath: /env
+      containers:
+      - name: vault-renewer
+        imagePullPolicy: Always
+        image: chrislevi/kube-vault-auth-renewer
+        #image: wealthwizardsengineering/kube-vault-auth-renewer
+        env:
+        - name: RENEW_INTERVAL
+          value: "21600"
+        - name: VAULT_ADDR
+          value: "https://dev-vault:8200"
+        volumeMounts:
+        - name: shared-data
+          mountPath: /env
+      - name: my-app
+        image: alpine
+        command: ["/bin/sh", "-c", "source /env/variables; ls /env/"]
+        volumeMounts:
+        - name: shared-data
+          mountPath: /env
+      volumes:
+        - name: shared-data
+          emptyDir: {}
+
