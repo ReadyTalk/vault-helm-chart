@@ -7,7 +7,7 @@ Consul:
   Cpu: "150m"
   Datacenter: "dc1"
   Image: "consul"
-  ImageTag: "1.4.4"
+  ImageTag: "1.5.1"
   ImagePullPolicy: "IfNotPresent"
   Memory: "320Mi"
   Replicas: 5
@@ -59,7 +59,7 @@ Vault:
     Enabled: true # If enabled, will use service type ClusterIP
   NodePort: 30825 # Ignored if Ingress.Enabled = true
   Image: "vault"
-  ImageTag: "1.1.0"
+  ImageTag: "1.1.1"
   ImagePullPolicy: "IfNotPresent"
   LogLevel: "info"
   Replicas: 3

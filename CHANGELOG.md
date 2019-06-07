@@ -1,3 +1,8 @@
+# v0.2.1
+* Address Helm v2.14 New Validation Rules (https://github.com/helm/helm/pull/5576)
+* Use "Soft" AntiAffinities to allow deployment to single node services such as microK8s or Minikube
+* Bumped Vault to 1.1.1 and Consul to 1.5.1
+
 # v0.2.0
 * Added Pod Disruptions Budgets (PDBs) to Consul and Vault
 * Added optional rolling update partitioning for Consul

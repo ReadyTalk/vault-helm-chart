@@ -15,7 +15,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       partition: {{ .Values.Consul.updatePartition }}
-  {{- else -}}
+  {{- else }}
     type: "OnDelete"
   {{- end }}
   replicas: {{ .Values.Consul.Replicas }}
@@ -32,13 +32,16 @@ spec:
         chart: {{ template "vault.chart" . }}
         component: "{{ .Release.Name }}-{{ .Values.Consul.ComponentName }}"
     spec:
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchLabels:
-                release: {{ .Release.Name | quote }}
-                component: "{{ .Release.Name }}-{{ .Values.Consul.ComponentName }}"
-            topologyKey: kubernetes.io/hostname
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  release: {{ .Release.Name | quote }}
+                  component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
       terminationGracePeriodSeconds: 10
       securityContext:
         fsGroup: 1000
