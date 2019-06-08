@@ -10,11 +10,25 @@ metadata:
     component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
 data:
   config.json : |
+    {{- if eq (.Values.Vault.DataStorage | toString) "s3" }}
+    ha_storage "consul" {
+    {{- else }}
     storage "consul" {
+    {{- end }}
       address = "unix:///consul-unix-socket/consul-client.sock"
       scheme = "http"
       disable_registration = "{{default "false" .Values.Vault.DisableConsulRegistration}}"
     }
+    {{- if eq (.Values.Vault.DataStorage | toString) "s3" }}
+    storage "s3" {
+      access_key = {{- (.Values.Vault.awsAccessKey | toString) -}}
+      secret_key = {{- (.Values.Vault.awsSecretKey | toString) -}}
+      bucket     = {{- (.Values.Vault.awsBucket | toString) -}}
+      {{- if ne (.Values.Vault.awsKmsKeyId | toString) "-" }}
+      kms_key_id = {{- (.Values.Vault.awsKmsKeyId | toString) -}}
+      {{- end }}
+    }
+    {{- end }}
     listener "tcp" {
       address = "0.0.0.0:{{.Values.Vault.HttpPort}}"
       tls_key_file = "/vault/tls/tls.key"

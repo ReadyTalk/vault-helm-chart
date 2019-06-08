@@ -52,6 +52,13 @@ Consul:
 # Vault server configuration
 Vault:
   ComponentName: "vault"
+  # Consul is used as "ha_storage".
+  DataStorage: "consul"  # "storage" options: "consul", "s3".
+  awsAccessKey: ""
+  awsSecretKey: ""
+  awsBucket: ""
+  # Leave unchanged - if "AES-256" or no encryption at rest is used 
+  awsKmsKeyId: "-" # Options: "-", "alias/aws/s3" or custom KMS key id
   AutoUnseal: false
   HttpPort: 8200
   HaForwardingPort: 8201
@@ -59,7 +66,7 @@ Vault:
     Enabled: true # If enabled, will use service type ClusterIP
   NodePort: 30825 # Ignored if Ingress.Enabled = true
   Image: "vault"
-  ImageTag: "1.1.1"
+  ImageTag: "1.1.2"
   ImagePullPolicy: "IfNotPresent"
   LogLevel: "info"
   Replicas: 3
