@@ -41,7 +41,7 @@ spec:
               labelSelector:
                 matchLabels:
                   release: {{ .Release.Name | quote }}
-                  component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
+                  component: "{{ .Release.Name }}-{{ .Values.Consul.ComponentName }}"
       terminationGracePeriodSeconds: 10
       securityContext:
         fsGroup: 1000

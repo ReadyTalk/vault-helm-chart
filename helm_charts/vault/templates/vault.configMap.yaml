@@ -21,11 +21,12 @@ data:
     }
     {{- if eq (.Values.Vault.DataStorage | toString) "s3" }}
     storage "s3" {
-      access_key = {{- (.Values.Vault.awsAccessKey | toString) -}}
-      secret_key = {{- (.Values.Vault.awsSecretKey | toString) -}}
-      bucket     = {{- (.Values.Vault.awsBucket | toString) -}}
+      access_key = {{ (.Values.Vault.awsAccessKey | toString | quote) }}
+      secret_key = {{ (.Values.Vault.awsSecretKey | toString | quote) }}
+      bucket     = {{ (.Values.Vault.awsBucket | toString | quote) }}
+      region     = {{ (.Values.Vault.awsBucketRegion | toString | quote) }}
       {{- if ne (.Values.Vault.awsKmsKeyId | toString) "-" }}
-      kms_key_id = {{- (.Values.Vault.awsKmsKeyId | toString) -}}
+      kms_key_id = {{ (.Values.Vault.awsKmsKeyId | toString | quote) }}
       {{- end }}
     }
     {{- end }}

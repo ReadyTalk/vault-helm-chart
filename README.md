@@ -76,6 +76,12 @@ It isn't hard to [get started](https://www.vaultproject.io/intro/getting-started
 | `Consul.Restore.AwsAccessKeyId` | AWS key with access to the restore s3 location |  |
 | `Consul.Restore.AwsSecretAccessKey` | AWS secret key with access to the restore s3 location | |
 | `Vault.ComponentName` | Used for resource names and labeling | `vault` |
+| `Vault.DataStorage` | Vault's "storage" backend | `consul` |
+| `Vault.awsAccessKey` | Vault's AWS S3 "storage" backend Access Key | |
+| `Vault.awsSecretKey` | Vault's AWS S3 "storage" backend Secret Key | |
+| `Vault.awsBucket` | Vault's AWS S3 "storage" backend Bucket | |
+| `Vault.awsBucketRegion` | Vault's AWS S3 "storage" backend Bucket Region | |
+| `Vault.awsKmsKeyId` | Vault's AWS S3 "storage" backend Bucket KMS Customer-Managed Key ID | |
 | `Vault.AutoUnseal` | Vault auto-unsealing (deprecated) | `false` |
 | `Vault.HttpPort` | Vault http listening port | `8200` |
 | `Vault.HaForwardingPort` | Vault high-availability port-forwarding port | `8201` |
