@@ -7,7 +7,7 @@ Consul:
   Cpu: "150m"
   Datacenter: "dc1"
   Image: "consul"
-  ImageTag: "1.5.1"
+  ImageTag: "1.5.3"
   ImagePullPolicy: "IfNotPresent"
   Memory: "320Mi"
   Replicas: 5
@@ -39,7 +39,9 @@ Consul:
     ImageTag: "latest"
     Cpu: "512m"
     Memory: "200Mi"
-    S3URL: "" # {{ .Release.Name }} will get added to the end
+    S3URL: ""
+    AwsAccessKeyId: ""
+    AwsSecretAccessKey: ""
     SleepDuration: 7200 # 2 hours
 
   Restore:
@@ -56,7 +58,7 @@ Vault:
   DataStorage: "consul"  # As data "storage": consul / s3
   awsAccessKey: ""
   awsSecretKey: ""
-  awsBucket: ""
+  awsBucketName: ""
   awsBucketRegion: ""
   # Leave unchanged - if "AES-256" or no encryption at rest.
   awsKmsKeyId: "-" # Options: "-", "alias/aws/s3" or custom KMS key id.
@@ -67,7 +69,7 @@ Vault:
     Enabled: true # If enabled, will use service type ClusterIP
   NodePort: 30825 # Ignored if Ingress.Enabled = true
   Image: "vault"
-  ImageTag: "1.1.2"
+  ImageTag: "1.2.1"
   ImagePullPolicy: "IfNotPresent"
   LogLevel: "info"
   Replicas: 3
