@@ -39,7 +39,7 @@ It isn't hard to [get started](https://www.vaultproject.io/intro/getting-started
 | `Consul.Cpu` | Consul container requested cpu | `100m` |
 | `Consul.Datacenter` | Consul datacenter name | `dc1` |
 | `Consul.Image` | Consul container image name | `consul` |
-| `Consul.ImageTag` | Consul container image tag | `1.5.3` |
+| `Consul.ImageTag` | Consul container image tag | `1.6.0` |
 | `Consul.ImagePullPolicy` | Consul container pull policy | `IfNotPresent` |
 | `Consul.Memory` | Consul container requested memory | `256Mi` |
 | `Consul.Replicas` | Consul container replicas | `5` |
@@ -78,19 +78,21 @@ It isn't hard to [get started](https://www.vaultproject.io/intro/getting-started
 | `Consul.Restore.AwsAccessKeyId` | AWS key with access to the restore s3 location |  |
 | `Consul.Restore.AwsSecretAccessKey` | AWS secret key with access to the restore s3 location | |
 | `Vault.ComponentName` | Used for resource names and labeling | `vault` |
+| `Vault.awsAccessKey` | Vault's AWS Access Key |  |
+| `Vault.awsSecretKey` | Vault's AWS Secret Key |  |
+| `Vault.awsRegion` | Vault's AWS Region |  |
 | `Vault.DataStorage` | Vault's "storage" backend | `consul` |
-| `Vault.awsAccessKey` | Vault's AWS S3 "storage" backend Access Key |  |
-| `Vault.awsSecretKey` | Vault's AWS S3 "storage" backend Secret Key |  |
 | `Vault.awsBucketName` | Vault's AWS S3 "storage" backend Bucket name |  |
-| `Vault.awsBucketRegion` | Vault's AWS S3 "storage" backend Bucket Region |  |
-| `Vault.awsKmsKeyId` | Vault's AWS S3 "storage" backend Bucket KMS Customer-Managed Key ID |  |
-| `Vault.AutoUnseal` | Vault auto-unsealing (deprecated) | `false` |
+| `Vault.awsBucketKmsKeyId` | Vault's AWS S3 "storage" backend Bucket KMS Customer-Managed Key ID |  |
+| `Vault.AutoUnseal` | (deprecated) Vault auto-unsealing using an auto-populated K8s secret | `false` |
+| `Vault.unsealAwsKmsKey` | Vault auto-unsealing using an AWS KMS key | `-` |
+| `Vault.unsealAwsKmsEndpoint` | The AWS KMS VPCe (internal end-point) for Vault's auto-unsealing | `-` |
 | `Vault.HttpPort` | Vault http listening port | `8200` |
 | `Vault.HaForwardingPort` | Vault high-availability port-forwarding port | `8201` |
 | `Vault.Ingress.Enabled` | Enable ingress. If enabled, will use service type ClusterIP | `true` |
 | `Vault.NodePort` | Vault service NodePort to open. Ignored if Ingress.Enabled = true  | `30825` |
 | `Vault.Image` | Vault container image name | `vault` |
-| `Vault.ImageTag` | Vault container image tag | `1.2.1` |
+| `Vault.ImageTag` | Vault container image tag | `1.2.2` |
 | `Vault.ImagePullPolicy` | Vault container pull policy | `IfNotPresent`
 | `Vault.LogLevel` | Set vault log level (trace, debug, info, etc.) | `info` |
 | `Vault.Replicas` | Vault container replicas | `3` |

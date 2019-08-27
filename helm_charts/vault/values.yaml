@@ -7,7 +7,7 @@ Consul:
   Cpu: "150m"
   Datacenter: "dc1"
   Image: "consul"
-  ImageTag: "1.5.3"
+  ImageTag: "1.6.0"
   ImagePullPolicy: "IfNotPresent"
   Memory: "320Mi"
   Replicas: 5
@@ -54,22 +54,23 @@ Consul:
 # Vault server configuration
 Vault:
   ComponentName: "vault"
-  # As "ha_storage" - Consul.
-  DataStorage: "consul"  # As data "storage": consul / s3
   awsAccessKey: ""
   awsSecretKey: ""
+  awsRegion: ""
+  # As "ha_storage" - Consul.
+  DataStorage: "consul"  # consul / s3
   awsBucketName: ""
-  awsBucketRegion: ""
-  # Leave unchanged - if "AES-256" or no encryption at rest.
-  awsKmsKeyId: "-" # Options: "-", "alias/aws/s3" or custom KMS key id.
-  AutoUnseal: false
+  awsBucketKmsKeyId: "-" # "alias/aws/s3" or custom KMS key id.
+  AutoUnseal: false # Using K8s secret (deprecated)
+  unsealAwsKmsKey: "-"
+  unsealAwsKmsEndpoint: "-"
   HttpPort: 8200
   HaForwardingPort: 8201
   Ingress:
     Enabled: true # If enabled, will use service type ClusterIP
   NodePort: 30825 # Ignored if Ingress.Enabled = true
   Image: "vault"
-  ImageTag: "1.2.1"
+  ImageTag: "1.2.2"
   ImagePullPolicy: "IfNotPresent"
   LogLevel: "info"
   Replicas: 3

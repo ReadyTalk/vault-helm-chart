@@ -1,8 +1,9 @@
 # v0.2.5
 * Add ability to use AWS S3 as Vault's Data Storage ("storage") and Consul only as Vault's High Availability Storage ("ha_storage")
+* Add ability to auto-unseal using AWS KMS key
 * Address Helm v2.14 New Validation Rules (https://github.com/helm/helm/pull/5576)
 * Use "Soft" AntiAffinities to allow deployment to single node services such as microK8s or Minikube
-* Bumped Vault to v1.2.1 and Consul to v1.5.3
+* Bumped Vault to v1.2.2 and Consul to v1.6.0
 
 # v0.2.0
 * Added Pod Disruptions Budgets (PDBs) to Consul and Vault
