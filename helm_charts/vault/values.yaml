@@ -96,6 +96,7 @@ Vault:
   Tls:
     ServerName: "vault.consul"
     AlternateServerNames: "vault-alt.consul" # Comma separated
+    caString: "" # if self-signed
     CertString: ""
     KeyString: ""
     LetsEncrypt:
