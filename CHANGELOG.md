@@ -1,8 +1,11 @@
 # v0.2.5
 * Add ability to use AWS S3 as Vault's Data Storage ("storage") and Consul only as Vault's High Availability Storage ("ha_storage")
 * Add ability to auto-unseal using AWS KMS key
+* Add ability to use manually pre-created self-signed certs.
 * Address Helm v2.14 New Validation Rules (https://github.com/helm/helm/pull/5576)
 * Use "Soft" AntiAffinities to allow deployment to single node services such as microK8s or Minikube
+* Fix Ingress over TLS.
+* Fix GitHub's Chart URL in `README.md`.
 * Bumped Vault to v1.2.2 and Consul to v1.6.0
 
 # v0.2.0
