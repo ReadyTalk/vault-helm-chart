@@ -25,14 +25,4 @@ spec:
           backend:
             serviceName: {{ template "vault.fullname" . }}
             servicePort: {{.Values.Vault.HttpPort}}
-    {{- $root := . -}}
-    {{- range .Values.Vault.Tls.AlternateServerNames | split "," }}
-    - host: {{ . | quote }}
-      http:
-        paths:
-        - path: /
-          backend:
-            serviceName: "{{ template "vault.fullname" $root }}"
-            servicePort: {{$root.Values.Vault.HttpPort}}
-    {{- end }}
 {{- end }}
