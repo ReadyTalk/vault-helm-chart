@@ -1,7 +1,7 @@
 apiVersion: v1
 description: A Hashicorp Vault chart for Kubernetes
 name: vault
-version: 0.2.0
+version: 0.2.5
 keywords: [hashicorp, vault, secret, consul]
 icon: https://raw.githubusercontent.com/docker-library/docs/726714ced14b1e14b6dd99fc82f20f14f1d3cfb1/vault/logo.png
 sources:

@@ -31,6 +31,10 @@ spec:
           value: -config-dir=/consul/config -config-dir=/consul/secrets
         - name: "S3_URL"
           value: {{.Values.Consul.Backup.S3URL}}/
+        - name: "AWS_ACCESS_KEY_ID"
+          value: {{.Values.Consul.Backup.AwsAccessKeyId | quote}}
+        - name: "AWS_SECRET_ACCESS_KEY"
+          value: {{.Values.Consul.Backup.AwsSecretAccessKey | quote}}
         - name: "SLEEP_DURATION"
           value: {{.Values.Consul.Backup.SleepDuration | quote}}
         resources:

@@ -10,11 +10,37 @@ metadata:
     component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
 data:
   config.json : |
+    {{- if eq (.Values.Vault.DataStorage | toString) "s3" }}
+    ha_storage "consul" {
+    {{- else }}
     storage "consul" {
+    {{- end }}
       address = "unix:///consul-unix-socket/consul-client.sock"
       scheme = "http"
       disable_registration = "{{default "false" .Values.Vault.DisableConsulRegistration}}"
     }
+    {{- if eq (.Values.Vault.DataStorage | toString) "s3" }}
+    storage "s3" {
+      access_key = {{ (.Values.Vault.awsAccessKey | toString | quote) }}
+      secret_key = {{ (.Values.Vault.awsSecretKey | toString | quote) }}
+      bucket     = {{ (.Values.Vault.awsBucketName | toString | quote) }}
+      region     = {{ (.Values.Vault.awsRegion | toString | quote) }}
+      {{- if ne (.Values.Vault.awsBucketKmsKeyId | toString) "-" }}
+      kms_key_id = {{ (.Values.Vault.awsBucketKmsKeyId | toString | quote) }}
+      {{- end }}
+    }
+    {{- end }}
+    {{- if ne (.Values.Vault.unsealAwsKmsKey | toString) "-" }}
+      seal "awskms" {
+      {{- if ne (.Values.Vault.unsealAwsKmsEndpoint | toString) "-" }}
+        endpoint   = {{ (.Values.Vault.unsealAwsKmsEndpoint | toString | quote) }}
+      {{- end }}
+        kms_key_id = {{ (.Values.Vault.unsealAwsKmsKey | toString | quote) }}
+        region     = {{ (.Values.Vault.awsRegion | toString | quote) }}
+        access_key = {{ (.Values.Vault.awsAccessKey | toString | quote) }}
+        secret_key = {{ (.Values.Vault.awsSecretKey | toString | quote) }}
+      }
+    {{- end }}
     listener "tcp" {
       address = "0.0.0.0:{{.Values.Vault.HttpPort}}"
       tls_key_file = "/vault/tls/tls.key"

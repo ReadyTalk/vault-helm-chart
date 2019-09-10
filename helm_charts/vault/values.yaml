@@ -7,7 +7,7 @@ Consul:
   Cpu: "150m"
   Datacenter: "dc1"
   Image: "consul"
-  ImageTag: "1.4.4"
+  ImageTag: "1.6.0"
   ImagePullPolicy: "IfNotPresent"
   Memory: "320Mi"
   Replicas: 5
@@ -39,7 +39,9 @@ Consul:
     ImageTag: "latest"
     Cpu: "512m"
     Memory: "200Mi"
-    S3URL: "" # {{ .Release.Name }} will get added to the end
+    S3URL: ""
+    AwsAccessKeyId: ""
+    AwsSecretAccessKey: ""
     SleepDuration: 7200 # 2 hours
 
   Restore:
@@ -52,14 +54,23 @@ Consul:
 # Vault server configuration
 Vault:
   ComponentName: "vault"
-  AutoUnseal: false
+  awsAccessKey: ""
+  awsSecretKey: ""
+  awsRegion: ""
+  # As "ha_storage" - Consul.
+  DataStorage: "consul"  # consul / s3
+  awsBucketName: ""
+  awsBucketKmsKeyId: "-" # "alias/aws/s3" or custom KMS key id.
+  AutoUnseal: false # Using K8s secret (deprecated)
+  unsealAwsKmsKey: "-"
+  unsealAwsKmsEndpoint: "-"
   HttpPort: 8200
   HaForwardingPort: 8201
   Ingress:
     Enabled: true # If enabled, will use service type ClusterIP
   NodePort: 30825 # Ignored if Ingress.Enabled = true
   Image: "vault"
-  ImageTag: "1.1.0"
+  ImageTag: "1.2.2"
   ImagePullPolicy: "IfNotPresent"
   LogLevel: "info"
   Replicas: 3
@@ -85,6 +96,7 @@ Vault:
   Tls:
     ServerName: "vault.consul"
     AlternateServerNames: "vault-alt.consul" # Comma separated
+    caString: "" # if self-signed
     CertString: ""
     KeyString: ""
     LetsEncrypt:

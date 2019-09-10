@@ -39,7 +39,7 @@ It isn't hard to [get started](https://www.vaultproject.io/intro/getting-started
 | `Consul.Cpu` | Consul container requested cpu | `100m` |
 | `Consul.Datacenter` | Consul datacenter name | `dc1` |
 | `Consul.Image` | Consul container image name | `consul` |
-| `Consul.ImageTag` | Consul container image tag | `0.9.2` |
+| `Consul.ImageTag` | Consul container image tag | `1.6.0` |
 | `Consul.ImagePullPolicy` | Consul container pull policy | `IfNotPresent` |
 | `Consul.Memory` | Consul container requested memory | `256Mi` |
 | `Consul.Replicas` | Consul container replicas | `5` |
@@ -68,7 +68,9 @@ It isn't hard to [get started](https://www.vaultproject.io/intro/getting-started
 | `Consul.Backup.ImageTag` | Consul backup container image tag | `latest` |
 | `Consul.Backup.Cpu` | Consul backup requested cpu | `512m` |
 | `Consul.Backup.Memory` | Consul backup container requested memory | `200Mi` |
-| `Consul.Backup.S3URL` | Consul backups S3 bucket path, e.g `s3://my-bucket` (helm `.Release.Name` will get added to the end) |  |
+| `Consul.Backup.S3URL` | Consul backups S3 bucket path, e.g `s3://my-bucket` |  |
+| `Consul.Backup.AwsAccessKeyId` | AWS Access Key with access to the backup AWS S3 location |  |
+| `Consul.Backup.AwsSecretAccessKey` | AWS Secret Key with access to the backup AWS S3 location |  |
 | `Consul.Backup.SleepDuration` | Backup interval (in seconds) | `7200` |
 | `Consul.Restore.ComponentName` | Used for resource names and labeling | `restore` |
 | `Consul.Restore.S3URL` | Full restore S3 bucket path, e.g. `s3://my-bucket/vault-a/` |  |
@@ -76,13 +78,21 @@ It isn't hard to [get started](https://www.vaultproject.io/intro/getting-started
 | `Consul.Restore.AwsAccessKeyId` | AWS key with access to the restore s3 location |  |
 | `Consul.Restore.AwsSecretAccessKey` | AWS secret key with access to the restore s3 location | |
 | `Vault.ComponentName` | Used for resource names and labeling | `vault` |
-| `Vault.AutoUnseal` | Vault auto-unsealing (deprecated) | `false` |
+| `Vault.awsAccessKey` | Vault's AWS Access Key |  |
+| `Vault.awsSecretKey` | Vault's AWS Secret Key |  |
+| `Vault.awsRegion` | Vault's AWS Region |  |
+| `Vault.DataStorage` | Vault's "storage" backend | `consul` |
+| `Vault.awsBucketName` | Vault's AWS S3 "storage" backend Bucket name |  |
+| `Vault.awsBucketKmsKeyId` | Vault's AWS S3 "storage" backend Bucket KMS Customer-Managed Key ID |  |
+| `Vault.AutoUnseal` | (deprecated) Vault auto-unsealing using an auto-populated K8s secret | `false` |
+| `Vault.unsealAwsKmsKey` | Vault auto-unsealing using an AWS KMS key | `-` |
+| `Vault.unsealAwsKmsEndpoint` | The AWS KMS VPCe (internal end-point) for Vault's auto-unsealing | `-` |
 | `Vault.HttpPort` | Vault http listening port | `8200` |
 | `Vault.HaForwardingPort` | Vault high-availability port-forwarding port | `8201` |
 | `Vault.Ingress.Enabled` | Enable ingress. If enabled, will use service type ClusterIP | `true` |
 | `Vault.NodePort` | Vault service NodePort to open. Ignored if Ingress.Enabled = true  | `30825` |
 | `Vault.Image` | Vault container image name | `vault` |
-| `Vault.ImageTag` | Vault container image tag | `0.9.0` |
+| `Vault.ImageTag` | Vault container image tag | `1.2.2` |
 | `Vault.ImagePullPolicy` | Vault container pull policy | `IfNotPresent`
 | `Vault.LogLevel` | Set vault log level (trace, debug, info, etc.) | `info` |
 | `Vault.Replicas` | Vault container replicas | `3` |
@@ -123,7 +133,7 @@ Additional dependencies
 
 Checkout the repo:
 ```bash
-git clone https://github.com/ReadyTalk/vault-helm-chart.git
+git clone https://github.com/PremiereGlobal/vault-helm-chart.git
 cd vault-helm-chart
 ```
 

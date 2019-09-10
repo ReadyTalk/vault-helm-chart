@@ -181,15 +181,16 @@ spec:
             - consul
           initialDelaySeconds: 5
           timeoutSeconds: 2
-      podAntiAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-        - weight: 100
-          podAffinityTerm:
-            topologyKey: kubernetes.io/hostname
-            labelSelector:
-              matchLabels:
-                release: {{ .Release.Name | quote }}
-                component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  release: {{ .Release.Name | quote }}
+                  component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
       volumes:
       - name: config
         configMap:
