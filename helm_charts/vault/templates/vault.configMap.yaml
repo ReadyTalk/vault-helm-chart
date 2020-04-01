@@ -19,6 +19,7 @@ data:
       address = "0.0.0.0:{{.Values.Vault.HttpPort}}"
       tls_key_file = "/vault/tls/tls.key"
       tls_cert_file = "/vault/tls/tls.crt"
+      {{ .Values.Vault.config.tcpAdditionalOptions }}
     }
     telemetry {
       prometheus_retention_time = "24h"

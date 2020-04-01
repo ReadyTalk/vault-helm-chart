@@ -35,6 +35,7 @@ It isn't hard to [get started](https://www.vaultproject.io/intro/getting-started
 
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
+| `rbac.create` | Create RBAC service accounts, roles and rolebindings for components | `true` |
 | `Consul.ComponentName` | Used for resource names and labeling | `consul` |
 | `Consul.Cpu` | Consul container requested cpu | `100m` |
 | `Consul.Datacenter` | Consul datacenter name | `dc1` |
@@ -52,6 +53,7 @@ It isn't hard to [get started](https://www.vaultproject.io/intro/getting-started
 | `Consul.SerfwanUdpPort` | Consul serf wan UDP listening port | `8302` |
 | `Consul.ServerPort` | Consul server listening port | `8300` |
 | `Consul.ConsulDnsPort` | Consul DNS listening port | `8600` |
+| `Consul.PodManagementPolicy` | Consul statefulset pod management policy | `` |
 | `Consul.PreInstall.ComponentName` | Used for resource names and labeling  | `consul-preinstall` |
 | `Consul.PreInstall.JobDeadline` | Timeout for Consul pre-install job (seconds) | `30` |
 | `Consul.PreInstall.Tls.CountryName` | TLS cert country name | `US` |
@@ -96,6 +98,7 @@ It isn't hard to [get started](https://www.vaultproject.io/intro/getting-started
 | `Vault.DisableConsulRegistration` | [Disable Vault registration within Consul ](https://www.vaultproject.io/docs/configuration/storage/consul.html#disable_registration) | `false` |
 | `Vault.DefaultLeaseTtl` | Default lease TTL for Vault tokens | `768h` |
 | `Vault.MaxLeaseTtl` | Max lease TTL for Vault tokens | `768h` |
+| `Value.config.tcpAdditionalOptions` | Additional options to be added to the Vault TCP configuration | `` |
 | `Vault.ConsulClient.ComponentName` | Used for resource names and labeling | `consul-client` |
 | `Vault.PreInstall.ComponentName` | Used for resource names and labeling | `vault-preinstall` |
 | `Vault.PreInstall.JobDeadline` | Timeout for Vault pre-install job(s) (seconds)  | `100`
@@ -103,9 +106,9 @@ It isn't hard to [get started](https://www.vaultproject.io/intro/getting-started
 | `Vault.Tls.AlternateServerNames` | Vault TLS/ingress alternative hostnames (comma separated) | `vault-alt.consul` |
 | `Vault.Tls.CertString` | Provide a TLS certificate file to use in Vault's listener |  |
 | `Vault.Tls.KeyString` | Provide a TLS certificate key file to use in Vault's listener |  |
-| `Vault.Tls.LetsEncrypt.Enabled` | Enable LetsEncrypt support | `false` |
-| `Vault.Tls.LetsEncrypt.Environment` | LetsEncrypt environment (production/stage) | `stage` |
-| `Vault.Tls.LetsEncrypt.AcmeAccountKey` | LetsEncrypt registration key location (s3 bucket), e.g. `s3://my-bucket/stage.pem` | |
+| `Vault.Tls.CertManager.Enabled` | Enable cert-manager certs | `false` |
+| `Vault.Tls.CertManager.CertificateSpec` | Specification of the cert-manager certificate resource | `` |
+| `Vault.Tls.CertManager.certReloader.name` | Name given to the cert-manager reload resources | `cert-reloader` |
 | `Vault.Ui.Enabled` | Enable Vault UI | `false` |
 
 Additional dependencies

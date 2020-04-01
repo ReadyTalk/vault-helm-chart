@@ -24,6 +24,8 @@ spec:
         release: {{ .Release.Name | quote }}
         chart: {{ template "vault.chart" . }}
         component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/vault.configMap.yaml") . | sha256sum }}        
     spec:
       {{- if .Values.Vault.HostAliases }}
       hostAliases:
@@ -35,19 +37,29 @@ spec:
         {{- end }}
       {{- end }}
       {{- end }}
+      initContainers:
+        - name: copy-config
+          image: busybox
+          command:
+          - cp
+          - "/vault/config-ro/config.json"
+          - "/vault/config/config.json"
+          volumeMounts:
+          - name: config-ro
+            mountPath: /vault/config-ro
+          - name: config
+            mountPath: /vault/config
       containers:
       - name: {{ template "vault.fullname" . }}
         image: "{{.Values.Vault.Image}}:{{.Values.Vault.ImageTag}}"
         imagePullPolicy: {{.Values.Vault.ImagePullPolicy}}
-        command:
-          - "/bin/sh"
-          - "-ec"
-          - |
-            cp /vault/config-ro/config.json /vault/config/config.json
-            docker-entrypoint.sh server
+        args:
+          - "server"
         env:
+        {{- if not (and .Values.Vault.Tls.CertManager .Values.Vault.Tls.CertManager.CertficateSpec) }}
         - name: "VAULT_CACERT"
           value: "/vault/tls/ca.crt"
+        {{- end }}
         - name: "VAULT_LOG_LEVEL"
           value: "{{.Values.Vault.LogLevel}}"
         - name: "VAULT_TLS_SERVER_NAME"
@@ -62,7 +74,7 @@ spec:
                 - |
                   cp -R /post-start-ro /post-start
                   chmod -R +x /post-start
-                  /post-start/unseal-vault.sh {{ template "tls_skip_verify" . }}
+                  /post-start/unseal-vault.sh
         {{- end }}
         livenessProbe:
           exec:
@@ -89,7 +101,7 @@ spec:
           containerPort: {{.Values.Vault.HaForwardingPort}}
         volumeMounts:
         - name: config
-          mountPath: /vault/config-ro
+          mountPath: /vault/config
         - name: tls
           mountPath: /vault/tls
         - name: ca-consul
@@ -192,6 +204,8 @@ spec:
                 component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
       volumes:
       - name: config
+        emptyDir: {}
+      - name: config-ro
         configMap:
           name: {{ template "vault.fullname" . }}
           items:

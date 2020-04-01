@@ -1,5 +1,6 @@
-# Default values for Vault.
-# This is a YAML-formatted file.
+## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
+rbac:
+  create: true
 
 # Consul storage backend configuration
 Consul:
@@ -20,6 +21,7 @@ Consul:
   SerfwanUdpPort: 8302
   ServerPort: 8300
   ConsulDnsPort: 8600
+  # PodManagementPolicy: "Parallel"
   PreInstall:
     ComponentName: "consul-preinstall"
     JobDeadline: 60
@@ -73,6 +75,9 @@ Vault:
   DisableConsulRegistration: "false"
   DefaultLeaseTtl: "768h"
   MaxLeaseTtl: "768h"
+  # config:
+  #   tcpAdditionalOptions: |
+  #     tls_disable_client_certs = "true"
   Readiness:
     readyIfStandby: true
     readyIfSealed: false
@@ -82,15 +87,38 @@ Vault:
   PreInstall:
     ComponentName: "vault-preinstall"
     JobDeadline: 60
+
   Tls:
     ServerName: "vault.consul"
     AlternateServerNames: "vault-alt.consul" # Comma separated
     CertString: ""
     KeyString: ""
-    LetsEncrypt:
+    CertManager:
+
+      # Enable the user of cert-manager to issue certificates
       Enabled: false
-      Environment: "stage" # production/stage
-      AcmeAccountKey: "s3://<bucket-name>/stage.pem"
+
+      # Contains the spec for the certificate minus the secret name which will
+      # automatically be generated
+      # CertficateSpec:
+      #   dnsNames:
+      #   - foo.example.com
+      #   - bar.example.com
+      #   acme:
+      #     config:
+      #     - http01:
+      #         ingressClass: nginx
+      #       domains:
+      #       - foo.example.com
+      #       - bar.example.com
+      #   issuerRef:
+      #     name: letsencrypt-prod
+      #     kind: Issuer
+
+      # The certReloader is a cronjob that sends a SIGHUP to the vault processes
+      # once per day to pick up new certs when they rotate
+      certReloader:
+        name: cert-reloader
   Ui:
     Enabled: true
 Misc:

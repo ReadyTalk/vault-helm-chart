@@ -16,9 +16,9 @@ sources:
   - https://github.com/hashicorp/consul-helm
 maintainers:
   - name: Ryan Wilcox
-    email: ryan.wilcox@readytalk.com
+    email: ryan.wilcox@pgi.com
   - name: Chris Bartlett
-    email: christopher.bartlett@readytalk.com
+    email: christopher.bartlett@pgi.com
 contributors:
   - name: Miroslav E. Hadzhiev
     email: miroslav.hadzhiev@gmail.com

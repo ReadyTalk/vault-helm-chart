@@ -24,6 +24,7 @@ spec:
         component: "{{ .Release.Name }}-{{.Values.Consul.PreInstall.ComponentName}}"
     spec:
       restartPolicy: Never
+      serviceAccount: {{ if .Values.rbac.create }}{{ template "vault.preinstall.fullname" . }}{{ else }}default{{ end }}
       initContainers:
         - name: copy-ro-scripts
           image: busybox

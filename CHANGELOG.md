@@ -1,3 +1,16 @@
+# v0.3.0
+
+### Breaking Changes
+* Removing custom LetsEncrypt support in favor of CertManager
+
+### Features
+* Adding RBAC support
+* Additional TCP option support for Vault
+
+### Fixes
+* Fixes issue with dumb-init not running as PID 1 in the Vault deployment
+* Will now automatically roll deployments when Vault config changes
+
 # v0.2.0
 * Added Pod Disruptions Budgets (PDBs) to Consul and Vault
 * Added optional rolling update partitioning for Consul

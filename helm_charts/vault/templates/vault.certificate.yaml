@@ -1,0 +1,14 @@
+{{- if and .Values.Vault.Tls.CertManager .Values.Vault.Tls.CertManager.CertficateSpec}}
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: {{ template "vault.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "vault.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
+spec:
+  secretName: {{ template "vault.fullname" . }}.tls
+{{ toYaml .Values.Vault.Tls.CertManager.CertficateSpec | indent 2 }}
+{{- end }}

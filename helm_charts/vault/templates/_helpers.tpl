@@ -33,20 +33,6 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Create a value that contains the vault -tls-skip-verify flag if we should skip TLS verification for vault
-This is used to skip verification when using self-signed certs or the LetsEncrypt staging environment
-*/}}
-{{- define "tls_skip_verify" -}}
-  {{ if and .Values.Vault.Tls.CertString .Values.Vault.Tls.KeyString }}
-    {{- print "" -}}
-  {{ else if or (not .Values.Vault.Tls.LetsEncrypt.Enabled) (eq .Values.Vault.Tls.LetsEncrypt.Environment "stage") }}
-    {{- print "--tls-skip-verify" -}}
-  {{ else }}
-    {{- print "" -}}
-  {{ end }}
-{{- end -}}
-
-{{/*
 Compute the maximum number of unavailable Vault replicas for the PodDisruptionBudget.
 This defaults to (n/2)-1 where n is the number of members of the server cluster.
 Special case of replica equaling 3 and allowing a minor disruption of 1 otherwise
@@ -86,4 +72,20 @@ Add a special case for replicas=1, where it should default to 0 as well.
 {{- sub (div (int .Values.Consul.Replicas) 2) 1 -}}
 {{- end -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Create a default fully qualified cert-reload name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "vault.certReloader.fullname" -}}
+{{- printf "%s-%s" (include "vault.fullname" .) .Values.Vault.Tls.CertManager.certReloader.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Create a default fully qualified preinstall name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "vault.preinstall.fullname" -}}
+{{- printf "%s-%s" (include "vault.fullname" .) "preinstall" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}

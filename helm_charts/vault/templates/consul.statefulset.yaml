@@ -9,7 +9,7 @@ metadata:
     component: "{{ .Release.Name }}-{{ .Values.Consul.ComponentName }}"
 spec:
   serviceName: "{{ template "vault.fullname" . }}-{{.Values.Consul.ComponentName}}"
-  podManagementPolicy: Parallel
+  podManagementPolicy: {{ .Values.Consul.PodManagementPolicy }}
   updateStrategy:
   {{- if (gt (int .Values.Consul.updatePartition) 0) }}
     type: RollingUpdate

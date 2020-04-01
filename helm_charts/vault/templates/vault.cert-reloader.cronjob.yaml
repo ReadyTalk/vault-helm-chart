@@ -1,0 +1,31 @@
+{{- if and .Values.Vault.Tls.CertManager .Values.Vault.Tls.CertManager.CertficateSpec}}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "vault.certReloader.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "vault.chart" . }}
+    component: "{{ .Release.Name }}-{{ .Values.Vault.ComponentName }}"
+spec:
+  schedule: "@daily"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 60
+      template:
+        spec:
+          serviceAccount: {{ if .Values.rbac.create }}{{ template "vault.certReloader.fullname" . }}{{ else }}default{{ end }}
+          restartPolicy: Never
+          containers:
+          - name: cert-reloader
+            image: readytalk/minikubectl:v1.10
+            args:
+            - /bin/bash
+            - -c
+            - for PO in $(kubectl get po -n {{ .Release.Namespace }} -o go-template --template '{{ "{{range .items}}{{.metadata.name}}{{\"\\n\"}}{{end}}" }}' -l component={{ .Release.Name }}-{{ .Values.Vault.ComponentName }});do kubectl exec ${PO} -c {{ template "vault.fullname" . }} -n {{ .Release.Namespace }} -- sh -c "kill -SIGHUP 1"; done
+          restartPolicy: Never
+
+{{- end }}

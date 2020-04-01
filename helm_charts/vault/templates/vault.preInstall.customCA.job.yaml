@@ -1,4 +1,4 @@
-{{- if and (not .Values.Vault.Tls.LetsEncrypt.Enabled) (not .Values.Vault.Tls.CertString) }}
+{{- if and (not .Values.Vault.Tls.CertManager.Enabled) (not .Values.Vault.Tls.CertString) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -23,6 +23,7 @@ spec:
         component: "{{ .Release.Name }}-{{.Values.Vault.PreInstall.ComponentName}}"
     spec:
       restartPolicy: Never
+      serviceAccount: {{ if .Values.rbac.create }}{{ template "vault.preinstall.fullname" . }}{{ else }}default{{ end }}
       containers:
       - name: {{ template "vault.fullname" . }}-{{.Values.Vault.PreInstall.ComponentName}}
         image: "{{.Values.Misc.omgwtfssl.Image}}:{{.Values.Misc.omgwtfssl.ImageTag}}"
